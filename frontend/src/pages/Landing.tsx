@@ -17,6 +17,8 @@ function Landing() {
         <Features />
         <Popular />
         <Testimonials />
+        </div>
+      </div>
       
   );
 }
