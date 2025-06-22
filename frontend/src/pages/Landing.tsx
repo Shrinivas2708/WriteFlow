@@ -4,6 +4,7 @@ import HeroCards from "../components/HeroCards";
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/Newsletter";
 import Popular from "../components/Popular";
+import Testimonials from "../components/Testimonials";
 
 function Landing() {
   return (
@@ -15,6 +16,7 @@ function Landing() {
         <HeroCards />
         <Features />
         <Popular />
+        <Testimonials />
       </div>
       sa
     </div>
