@@ -30,7 +30,7 @@ function Testimonials() {
                     </div>
                     <div className="bg-[#1A1A1A] border border-[#262626] rounded-lg p-5 text-center relative ">
                         <StarRating rating={val.Star} />
-                        <p>{val.Review}</p>
+                        <p className="text-sm">{val.Review}</p>
                     </div>
                 </div>
             })

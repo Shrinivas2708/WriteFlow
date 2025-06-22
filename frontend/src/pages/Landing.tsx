@@ -1,4 +1,6 @@
 import Features from "../components/Features";
+import Footer from "../components/Footer";
+import FutureComp from "../components/FutureComp";
 import Hero from "../components/Hero";
 import HeroCards from "../components/HeroCards";
 import Navbar from "../components/Navbar";
@@ -17,6 +19,8 @@ function Landing() {
         <Features />
         <Popular />
         <Testimonials />
+        <FutureComp />
+        <Footer />
         </div>
       </div>
       
