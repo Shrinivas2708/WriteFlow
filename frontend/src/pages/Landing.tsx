@@ -17,9 +17,7 @@ function Landing() {
         <Features />
         <Popular />
         <Testimonials />
-      </div>
-      sa
-    </div>
+      
   );
 }
 
