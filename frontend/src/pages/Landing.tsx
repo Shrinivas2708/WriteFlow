@@ -10,7 +10,7 @@ import Testimonials from "../components/Testimonials";
 
 function Landing() {
   return (
-    <div className="w-full  bg-[#141414] min-h-screen overflow-y-auto  ">
+    <div className="w-full   ">
       <NewsLetter />
       <Navbar />
       <div className="w-full px-1 sm:px-6 md:px-10 lg:px-20">

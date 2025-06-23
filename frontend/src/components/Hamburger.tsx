@@ -1,10 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { links } from "../data";
-import Login from "./Login";
-import Signup from "./Signup";
+import Login from "./LoginButton";
+import Signup from "./SignupButton";
 import { Link } from "react-router-dom";
 
-function Hamburger({ setOpen }: { setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+function Hamburger({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

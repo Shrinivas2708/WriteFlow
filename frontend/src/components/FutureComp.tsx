@@ -5,8 +5,8 @@ import arrow from "../assets/arrow.svg"
 function FutureComp() {
   return (
     <div className="lg:p-14 p-5 w-full border-b border-t border-[#262626] bg-[#1A1A1A] flex flex-col lg:gap-16  gap-10">
-      <div className=" flex gap-5 lg:p-10 p-2 flex-col">
-        <img src={futureIcon} alt="" className="w-20 h-20" />
+      <div className=" flex gap-5 lg:p-10 p-2 flex-col lg:flex-row">
+        <img src={futureIcon} alt="" className="w-20 h-20 md:w-30 md:h-30" />
         <div className="flex flex-col gap-3">
           <p className=" bg-[#333333]  w-fit lg:py-2 lg:px-2 px-1 py-1 lg:text-base text-sm rounded-sm">
             Learn, Connect, and Innovate

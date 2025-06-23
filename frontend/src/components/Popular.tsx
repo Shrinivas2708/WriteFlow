@@ -16,7 +16,7 @@ function Popular() {
       <div className="lg:px-12 ">
         {PopularBlogs.map((val, i) => {
           return (
-            <div className="grid lg:grid-cols-3">
+            <div key={i} className=" grid lg:grid-cols-3">
               <div className="col-span-1 flex justify-between flex-col  border-[#262626] lg:border-b   px-2 pt-1 ">
                 <div className=" p-2  flex  gap-3   h-full pt-5 lg:py-10">
                   <div className="w-14 h-14 rounded-full   ">
