@@ -8,11 +8,19 @@ function Footer() {
       </div>
 
    
-      <div className='flex gap-3 justify-center items-center order '>
-        <FaInstagram size={20} className=' cursor-pointer' />
-        <FaLinkedin size={20} className=' cursor-pointer' />
-        <FaGithub size={20} className=' cursor-pointer' />
-        <FaTwitter size={20} className=' cursor-pointer' />
+      <div className='flex gap-3 justify-center items-center order text-[#666666]'>
+        <FaInstagram size={20} className=' cursor-pointer hover:text-white' onClick={()=>{
+          window.open("https://www.instagram.com/itzzz_shriii/")
+        }}/>
+        <FaLinkedin size={20} className=' cursor-pointer hover:text-white' onClick={()=>{
+          window.open("https://www.linkedin.com/in/shrinivas-sherikar-a77980231/")
+        }}/>
+        <FaGithub size={20} className=' cursor-pointer hover:text-white' onClick={()=>{
+          window.open("https://github.com/Shrinivas2708")
+        }}/>
+        <FaTwitter size={20} className=' cursor-pointer hover:text-white' onClick={()=>{
+          window.open("https://x.com/ItzzzShri")
+        }}/>
       </div>
 
       <p className='text-[#666666] text-sm text-center md:text-center lg:text-end col-span-2 lg:col-span-1 '>
