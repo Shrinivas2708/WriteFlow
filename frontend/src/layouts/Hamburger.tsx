@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { links } from "../data";
-import Login from "./LoginButton";
-import Signup from "./SignupButton";
+import Login from "../components/LoginButton";
+import Signup from "../components/SignupButton";
 import { Link } from "react-router-dom";
 
 function Hamburger({
@@ -46,8 +46,8 @@ function Hamburger({
         <div className="w-[80%] h-[0.5px] bg-[#7E7E81]"></div>
       </div>
       <div className="w-[200px] flex flex-col gap-3 mt-2">
-        <Login className="text-center text-lg" navigateTo="login" />
-        <Signup className="text-center text-lg" navigateTo="signup" />
+        <Login className="text-center text-lg" navigateTo="/login" />
+        <Signup className="text-center text-lg" navigateTo="/signup" />
       </div>
     </div>
   );

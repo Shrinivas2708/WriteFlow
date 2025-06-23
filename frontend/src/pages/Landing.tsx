@@ -1,12 +1,12 @@
-import Features from "../components/Features";
-import Footer from "../components/Footer";
-import FutureComp from "../components/FutureComp";
-import Hero from "../components/Hero";
-import HeroCards from "../components/HeroCards";
-import Navbar from "../components/Navbar";
+import Features from "../layouts/Features";
+import Footer from "../layouts/Footer";
+import FutureComp from "../layouts/FutureComp";
+import Hero from "../layouts/Hero";
+import HeroCards from "../components/cards/HeroCards";
+import Navbar from "../layouts/Navbar";
 import NewsLetter from "../components/Newsletter";
-import Popular from "../components/Popular";
-import Testimonials from "../components/Testimonials";
+import Popular from "../layouts/Popular";
+import Testimonials from "../layouts/Testimonials";
 
 function Landing() {
   return (
@@ -21,9 +21,8 @@ function Landing() {
         <Testimonials />
         <FutureComp />
         <Footer />
-        </div>
       </div>
-      
+    </div>
   );
 }
 

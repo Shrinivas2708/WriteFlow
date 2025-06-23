@@ -1,8 +1,8 @@
 // import React from 'react'
-import CardIcon1 from "../assets/CardIcon1.svg"
-import CardIcon2 from "../assets/CardIcon2.svg"
-import CardIcon3 from "../assets/CardIcon3.svg"
-import arrow from "../assets/arrow.svg"
+import CardIcon1 from "../../assets/CardIcon1.svg"
+import CardIcon2 from "../../assets/CardIcon2.svg"
+import CardIcon3 from "../../assets/CardIcon3.svg"
+import arrow from "../../assets/arrow.svg"
 const CardsData = [
     {
         icon:CardIcon1,

@@ -1,7 +1,6 @@
-
 import futureIcon from "../assets/futureicon.svg";
 import { FutureData } from "../data";
-import arrow from "../assets/arrow.svg"
+import arrow from "../assets/arrow.svg";
 function FutureComp() {
   return (
     <div className="lg:p-14 p-5 w-full border-b border-t border-[#262626] bg-[#1A1A1A] flex flex-col lg:gap-16  gap-10">
@@ -23,24 +22,24 @@ function FutureComp() {
         </div>
       </div>
       <div className="border bg-[#141414] border-[#262626] p-3 flex gap-3 flex-col  lg:flex-row">
-        {
-            FutureData.map((val,i)=>{
-                return <div
-                key={i} className="bg-[#1A1A1A] border-[#262626] border p-3 rounded-md ">
-                    <div className=" flex justify-between items-center  p-2">
-                        <p className="text-lg font-semibold">{val.Heading}</p>
-                        <div className="w-10 h-10 bg-[#FFD11A] rounded-full flex items-center justify-center">
-                            <img src={arrow} alt="" />
-                        </div>
-                        
-                    </div>
-                    <div className=" p-3">
-                    <p className="text-[#98989A] text-sm">{val.Subheading}</p>
-                    </div>
-
+        {FutureData.map((val, i) => {
+          return (
+            <div
+              key={i}
+              className="bg-[#1A1A1A] border-[#262626] border p-3 rounded-md "
+            >
+              <div className=" flex justify-between items-center  p-2">
+                <p className="text-lg font-semibold">{val.Heading}</p>
+                <div className="w-10 h-10 bg-[#FFD11A] rounded-full flex items-center justify-center">
+                  <img src={arrow} alt="" />
                 </div>
-            })
-        }
+              </div>
+              <div className=" p-3">
+                <p className="text-[#98989A] text-sm">{val.Subheading}</p>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

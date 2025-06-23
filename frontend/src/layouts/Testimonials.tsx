@@ -1,7 +1,7 @@
 
 import { TestimonialsData } from "../data";
 
-import StarRating from "./Stars";
+import StarRating from "../components/Stars";
 
 function Testimonials() {
   return (

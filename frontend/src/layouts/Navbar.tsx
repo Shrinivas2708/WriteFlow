@@ -4,8 +4,8 @@ import { Menu, X } from "lucide-react";
 import Hamburger from "./Hamburger";
 import { links } from "../data";
 import logo from "../assets/logo.svg";
-import SignupButton from "./SignupButton";
-import LoginButton from "./LoginButton";
+import SignupButton from "../components/SignupButton";
+import LoginButton from "../components/LoginButton";
 function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -50,8 +50,8 @@ function Navbar() {
         </div>
 
         <div className="hidden sm:flex items-center space-x-2">
-          <LoginButton navigateTo='login' />
-          <SignupButton navigateTo='signup' />
+          <LoginButton navigateTo="/login" />
+          <SignupButton navigateTo="/signup" />
         </div>
 
         <div className="sm:hidden cursor-pointer">

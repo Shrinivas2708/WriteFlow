@@ -2,7 +2,7 @@ import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa'
 
 function Footer() {
   return (
-    <div className='w-full  bg-[#141414] grid lg:grid-cols-3 lg:grid-rows-1 grid-cols-2 grid-rows-2 gap-5 p-5'>
+    <div className='w-full  bg-[#141414] grid lg:grid-cols-3 lg:grid-rows-1 grid-cols-2 grid-rows-2 gap-5 p-5 border-t border-[#262626] '>
       <div className='text-[#666666]  text-xl font-semibold text-center md:text-center lg:text-start '>
         WriteFlow
       </div>
