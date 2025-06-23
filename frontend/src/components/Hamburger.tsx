@@ -46,8 +46,8 @@ function Hamburger({
         <div className="w-[80%] h-[0.5px] bg-[#7E7E81]"></div>
       </div>
       <div className="w-[200px] flex flex-col gap-3 mt-2">
-        <Login className="text-center text-lg" />
-        <Signup className="text-center text-lg" />
+        <Login className="text-center text-lg" navigateTo="login" />
+        <Signup className="text-center text-lg" navigateTo="signup" />
       </div>
     </div>
   );
