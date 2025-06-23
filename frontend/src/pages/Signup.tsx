@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import loginIcon from "../assets/Auth.png";
+import loginIcon from "../assets/Auth.png?url";
 import BackBtn from "../components/BackBtn";
 import InputFields from "../components/InputFields";
 import LoginButton from "../components/LoginButton";
@@ -18,9 +18,9 @@ function Signup() {
       Sign Up
     </div>
     <div className=" p-5  flex gap-3 flex-col">
-      <InputFields Label="Name" />
-      <InputFields Label="Email" />
-      <InputFields Label="Password" />
+      <InputFields Label="Name" type="text"/>
+      <InputFields Label="Email" type="email" />
+      <InputFields Label="Password" type="password"/>
     </div>
    
     <div className=" flex justify-center 1 flex-col items-center gap-5">

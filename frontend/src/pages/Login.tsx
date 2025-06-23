@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import loginIcon from "../assets/Auth.png";
+import loginIcon from "../assets/Auth.png?url";
 import BackBtn from "../components/BackBtn";
 import InputFields from "../components/InputFields";
 import LoginButton from "../components/LoginButton";
@@ -20,8 +20,8 @@ function Login() {
           Log In
         </div>
         <div className=" p-5  flex gap-3 flex-col">
-          <InputFields Label="Email" />
-          <InputFields Label="Password" />
+          <InputFields Label="Email" type="email"/>
+          <InputFields Label="Password" type="password"/>
         </div>
         <div className=" flex px-5 gap-2   items-center">
             <input type="checkbox" name="remember" id="remember" className="accent-yellow-500 w-4 h-4 cursor-pointer" />

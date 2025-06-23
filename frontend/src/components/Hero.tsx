@@ -1,6 +1,6 @@
 import { MoveUpRight, Plus } from "lucide-react";
-import image from "../assets/image.svg";
-// import React from "react";
+import image from "../assets/image.svg?url";
+
 const data = [
   {
     nums: 300,
