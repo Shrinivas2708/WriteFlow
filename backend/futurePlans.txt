@@ -1,0 +1,10 @@
+💡 When Would a Separate Draft Model Make Sense?
+Only if:
+
+You want multiple drafts/versions per blog (version history).
+
+You have editorial workflows (author writes → editor reviews → publisher posts).
+
+You want to keep saved changes separate from the live blog (like Wikipedia or Notion history).
+
+Even then, versioning is often handled with a BlogVersion table — not a separate Draft.

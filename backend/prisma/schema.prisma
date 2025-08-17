@@ -1,0 +1,272 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                        String            @id @default(uuid())
+  username                  String            @unique
+  firstName                 String
+  lastName                  String
+  email                     String            @unique
+  password                  String
+  avatar                    String?
+  verified                  Boolean           @default(false)
+  emailStatus               EmailStatus       @default(PENDING)
+  emailError                Boolean           @default(false)
+  emailErrorMessage         String?
+  lastEmailSentAt           DateTime?
+  emailVerificationAttempts Int               @default(0)
+  interests                 String[]          @default([])
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+  followers                 Follows[]         @relation("UserFollowers")
+  following                 Follows[]         @relation("UserFollowing")
+  blogs                     Blog[]            @relation("AuthorBlogs")
+  bookmarks                 Bookmark[]
+  activity                  UserActivity[]
+  recommendations           Recommendation[]
+  reach                     UserReach?
+  viewedBlogs               ViewedBlog[]
+  likedBlogs                LikedBlog[]
+  sharedBlogs               SharedBlog[]
+  comments                  Comment[]
+  customSections            CustomSection[]
+  trendingScore             Float             @default(0)
+  Notification              Notification[]
+  Progress                  ReadingProgress[]
+}
+
+enum EmailStatus {
+  PENDING
+  VERIFIED
+  INVALID
+}
+model InvalidEmail {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+model Blog {
+  id             String                  @id @default(uuid())
+  title          String
+  content        String
+  summary        String?
+  coverImage     String?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  author         User                    @relation("AuthorBlogs", fields: [authorId], references: [id])
+  authorId       String
+  status         BlogStatus              @default(DRAFT)
+  publishedAt    DateTime?
+  embedding      Json?
+  aiTags         String[]
+  usertags       BlogTag[]
+  stats          BlogStats?
+  views          ViewedBlog[]
+  likes          LikedBlog[]
+  shares         SharedBlog[]
+  bookmarks      Bookmark[]
+  recommendation Recommendation[]
+  draft          Draft?
+  comments       Comment[]
+  trendingScore  Float                   @default(0)
+  blogAnalytics  BlogAnalyticsSnapshot[]
+  Progress       ReadingProgress[]
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model BlogAnalyticsSnapshot {
+  id        String   @id @default(uuid())
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String
+  date      DateTime
+  views     Int
+  likes     Int
+  shares    Int
+  bookmarks Int
+}
+
+model BlogStats {
+  id        String @id @default(uuid())
+  blog      Blog   @relation(fields: [blogId], references: [id])
+  blogId    String @unique
+  views     Int    @default(0)
+  likes     Int    @default(0)
+  comments  Int    @default(0)
+  shares    Int    @default(0)
+  bookmarks Int    @default(0)
+}
+
+model Tag {
+  id            String    @id @default(uuid())
+  name          String    @unique
+  blogTags      BlogTag[]
+  usageCount    Int       @default(0)
+  viewCount     Int       @default(0)
+  likeCount     Int       @default(0)
+  shareCount    Int       @default(0)
+  trendingScore Float     @default(0)
+  vector        Json? // embedding vector for semantic tag matching
+}
+
+model BlogTag {
+  id     String @id @default(uuid())
+  blog   Blog   @relation(fields: [blogId], references: [id])
+  blogId String
+  tag    Tag    @relation(fields: [tagId], references: [id])
+  tagId  String
+}
+
+model Draft {
+  id        String   @id @default(uuid())
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String   @unique
+  content   String
+  updatedAt DateTime @updatedAt
+}
+
+model ViewedBlog {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String
+  timestamp DateTime @default(now())
+}
+
+model LikedBlog {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String
+  timestamp DateTime @default(now())
+}
+
+model SharedBlog {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String
+  timestamp DateTime @default(now())
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String
+  timestamp DateTime @default(now())
+}
+
+model Recommendation {
+  id      String   @id @default(uuid())
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  blog    Blog     @relation(fields: [blogId], references: [id])
+  blogId  String
+  shownAt DateTime
+  clicked Boolean  @default(false)
+}
+
+model UserActivity {
+  id        String       @id @default(uuid())
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
+  blogId    String
+  type      ActivityType
+  timestamp DateTime     @default(now())
+}
+
+enum ActivityType {
+  VIEW
+  LIKE
+  SHARE
+  BOOKMARK
+  COMMENT
+}
+
+model UserReach {
+  id          String @id @default(uuid())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String @unique
+  totalViews  Int    @default(0)
+  totalLikes  Int    @default(0)
+  totalShares Int    @default(0)
+  followers   Int    @default(0)
+}
+
+model Follows {
+  id          String   @id @default(uuid())
+  follower    User     @relation("UserFollowing", fields: [followerId], references: [id])
+  followerId  String
+  following   User     @relation("UserFollowers", fields: [followingId], references: [id])
+  followingId String
+  createdAt   DateTime @default(now())
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomSection {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  name      String
+  tags      String[]
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  user      User             @relation(fields: [userId], references: [id])
+  userId    String
+  type      NotificationType
+  message   String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+}
+
+enum NotificationType {
+  COMMENT
+  LIKE
+  FOLLOW
+  REPLY
+  RECOMMENDATION
+}
+
+model ReadingProgress {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String
+  scrollPos Int      @default(0) // store % scroll or paragraph ID
+  updatedAt DateTime @updatedAt
+}
