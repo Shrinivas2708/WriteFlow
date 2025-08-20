@@ -58,7 +58,7 @@ model InvalidEmail {
   createdAt DateTime @default(now())
 }
 model Blog {
-  id             String                  @id @default(uuid())
+  id             String                  @id @default(uuid()) 
   title          String
   content        String
   summary        String?
@@ -69,7 +69,7 @@ model Blog {
   authorId       String
   status         BlogStatus              @default(DRAFT)
   publishedAt    DateTime?
-  embedding      Json?
+  // embedding      Json?
   aiTags         String[]
   usertags       BlogTag[]
   stats          BlogStats?
@@ -269,4 +269,5 @@ model ReadingProgress {
   blogId    String
   scrollPos Int      @default(0) // store % scroll or paragraph ID
   updatedAt DateTime @updatedAt
+  @@unique([userId, blogId])
 }

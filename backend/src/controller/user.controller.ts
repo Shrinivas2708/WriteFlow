@@ -2,7 +2,6 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "..";
 import { AppError } from "../utils/AppError";
-
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.params;
   try {
@@ -22,15 +21,59 @@ export const getProfile = async (req: Request, res: Response, next: NextFunction
       },
     });
     if (!user) return next(new AppError(404, "User not found"));
+    // Construct new object instead of using delete
     const profile = {
-      ...user,
+      id: user.id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatar: user.avatar,
+      interests: user.interests,
+      createdAt: user.createdAt,
       followersCount: user.followers.length,
       followingCount: user.following.length,
       blogsCount: user.blogs.length,
     };
-    delete profile.followers;
-    delete profile.following;
-    delete profile.blogs;
+    res.status(200).json({ user: profile });
+  } catch (error) {
+    next(error);
+  }
+};
+export const getMe = async (req: Request, res: Response, next: NextFunction) => {
+  // req.user.id is populated by the verifyUser middleware
+  const userId = req.user?.id;
+  if (!userId) {
+    return next(new AppError(401, "Unauthorized: User ID not found in token."));
+  }
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        firstName: true,
+        lastName: true,
+        avatar: true,
+        interests: true,
+        createdAt: true,
+        followers: { select: { followerId: true } },
+        following: { select: { followingId: true } },
+        blogs: { where: { status: "PUBLISHED" }, select: { id: true } },
+      },
+    });
+    if (!user) return next(new AppError(404, "User profile not found.")); // Should ideally not happen if user is authenticated
+    const profile = {
+      id: user.id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatar: user.avatar,
+      interests: user.interests,
+      createdAt: user.createdAt,
+      followersCount: user.followers.length,
+      followingCount: user.following.length,
+      blogsCount: user.blogs.length,
+    };
     res.status(200).json({ user: profile });
   } catch (error) {
     next(error);
@@ -88,12 +131,12 @@ export const getFollowing = async (req: Request, res: Response, next: NextFuncti
 
 export const followUser = async (req: Request, res: Response, next: NextFunction) => {
   const { targetUserId } = req.params;
-  
   if (targetUserId === req.user?.id) return next(new AppError(400, "Cannot follow yourself"));
   try {
-    const user = await prisma.user.findFirst({where:{id:req.user?.id}})
+    const user = await prisma.user.findFirst({ where: { id: req.user?.id } });
+    if (!user) return next(new AppError(404, "User not found"));
     await prisma.follows.create({
-      data: { followerId: req.user?.id!, followingId: targetUserId },
+      data: { followerId: req.user!.id, followingId: targetUserId },
     });
     await prisma.userReach.upsert({
       where: { userId: targetUserId },
@@ -104,7 +147,7 @@ export const followUser = async (req: Request, res: Response, next: NextFunction
       data: {
         userId: targetUserId,
         type: "FOLLOW",
-        message: `${user?.username} followed you`,
+        message: `${user.username} followed you`,
       },
     });
     res.status(200).json({ message: "Followed" });
@@ -117,7 +160,7 @@ export const unfollowUser = async (req: Request, res: Response, next: NextFuncti
   const { targetUserId } = req.params;
   try {
     await prisma.follows.deleteMany({
-      where: { followerId: req.user?.id, followingId: targetUserId },
+      where: { followerId: req.user!.id, followingId: targetUserId },
     });
     await prisma.userReach.update({
       where: { userId: targetUserId },
@@ -132,7 +175,7 @@ export const unfollowUser = async (req: Request, res: Response, next: NextFuncti
 export const getUserReach = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const reach = await prisma.userReach.findUnique({
-      where: { userId: req.user?.id },
+      where: { userId: req.user!.id },
     });
     res.status(200).json({ reach: reach || { totalViews: 0, totalLikes: 0, totalShares: 0, followers: 0 } });
   } catch (error) {
@@ -145,19 +188,22 @@ export const getUserAnalytics = async (req: Request, res: Response, next: NextFu
   const toDate = req.query.toDate ? new Date(req.query.toDate as string) : undefined;
   try {
     const blogs = await prisma.blog.findMany({
-      where: { authorId: req.user?.id, publishedAt: { gte: fromDate, lte: toDate } },
+      where: { authorId: req.user!.id, publishedAt: { gte: fromDate, lte: toDate } },
       include: { stats: true },
     });
-    const analytics = blogs.reduce((acc, blog) => {
-      if (blog.stats) {
-        acc.totalViews += blog.stats.views;
-        acc.totalLikes += blog.stats.likes;
-        acc.totalShares += blog.stats.shares;
-        acc.totalComments += blog.stats.comments;
-        acc.totalBookmarks += blog.stats.bookmarks;
-      }
-      return acc;
-    }, { totalViews: 0, totalLikes: 0, totalShares: 0, totalComments: 0, totalBookmarks: 0 });
+    const analytics = blogs.reduce(
+      (acc, blog) => {
+        if (blog.stats) {
+          acc.totalViews += blog.stats.views;
+          acc.totalLikes += blog.stats.likes;
+          acc.totalShares += blog.stats.shares;
+          acc.totalComments += blog.stats.comments;
+          acc.totalBookmarks += blog.stats.bookmarks;
+        }
+        return acc;
+      },
+      { totalViews: 0, totalLikes: 0, totalShares: 0, totalComments: 0, totalBookmarks: 0 }
+    );
     res.status(200).json({ analytics });
   } catch (error) {
     next(error);

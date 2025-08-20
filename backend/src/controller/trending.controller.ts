@@ -66,7 +66,22 @@ export const updateTrendingScores = async (req: Request, res: Response, next: Ne
       }
     }
     // Update tag scores
-    const tags = await prisma.tag.findMany({ include: { blogTags: { include: { blog: { include: { stats: true } } } } });
+    const tags = await prisma.tag.findMany(
+      {
+        include:{
+          blogTags:{
+            include:{
+              blog:{
+                include:{
+                  stats:true
+                }
+              }
+            }
+          }
+        }
+      }
+    );
+    // { include: { blogTags: { include: { blog: { include: { stats: true } } } } }
     for (const tag of tags) {
       const tagBlogs = tag.blogTags.map(bt => bt.blog);
       const score = tagBlogs.reduce((sum, blog) => sum + (blog.stats ? blog.stats.views * 0.5 + blog.stats.likes * 0.3 : 0), 0);

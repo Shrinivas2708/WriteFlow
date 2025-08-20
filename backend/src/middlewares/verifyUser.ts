@@ -19,7 +19,6 @@ export const verifyUser = (req: Request, res: Response, next: NextFunction) => {
 
     req.user = {
       id: decoded.id!,
-     email:decoded.email!
     };
 
     next();

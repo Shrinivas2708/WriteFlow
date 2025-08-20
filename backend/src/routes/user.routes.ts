@@ -2,8 +2,8 @@
 import express from "express";
 const router = express.Router();
 import { verifyUser } from "../middlewares/verifyUser";
-import { getProfile, updateProfile, getFollowers, getFollowing, followUser, unfollowUser, getUserReach, getUserAnalytics } from "../controller/user.controller";
-
+import { getProfile, updateProfile, getFollowers, getFollowing, followUser, unfollowUser, getUserReach, getUserAnalytics, getMe } from "../controller/user.controller";
+router.get("/profile/me", verifyUser, getMe);
 router.get("/profile/:userId", getProfile);
 router.put("/profile", verifyUser, updateProfile);
 router.get("/followers/:userId", getFollowers);

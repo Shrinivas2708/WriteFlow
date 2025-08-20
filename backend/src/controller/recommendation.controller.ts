@@ -4,36 +4,29 @@ import { prisma } from "..";
 import { AppError } from "../utils/AppError";
 import { calculateSimilarity } from "../utils/similarity";
 import { aiService } from "../services/aiService";
+import { averageVectors, getEmbeddingFromPinecone, pineconeService } from "../services/pineConeService";
 
 export const getForYou = async (req: Request, res: Response, next: NextFunction) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   try {
     const userActivities = await prisma.userActivity.findMany({ where: { userId: req.user?.id } });
-    const viewedBlogs = userActivities.map(a => a.blogId);
-    const blogs = await prisma.blog.findMany({ where: { status: "PUBLISHED" }, include: { stats: true } });
-    const recommended = blogs
-      .filter(b => !viewedBlogs.includes(b.id))
-      .map(blog => ({
-        ...blog,
-        similarity: viewedBlogs.reduce((sum, vbId) => {
-          const vb = blogs.find(bl => bl.id === vbId);
-          return sum + (vb ? calculateSimilarity(blog.embedding as number[], vb.embedding as number[]) : 0);
-        }, 0) / (viewedBlogs.length || 1),
-      }))
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice((page - 1) * limit, page * limit);
-    // Log recommendations
-    for (const blog of recommended) {
-      await prisma.recommendation.create({
-        data: {
-          userId: req.user?.id!,
-          blogId: blog.id,
-          shownAt: new Date(),
-        },
-      });
+    const viewedBlogIds = userActivities.map(a => a.blogId);
+    if (viewedBlogIds.length === 0) {
+      // Fallback to latest or trending
+      const blogs = await prisma.blog.findMany({ where: { status: "PUBLISHED" }, take: limit });
+      res.status(200).json({ blogs });
+       return
     }
-    res.status(200).json({ blogs: recommended });
+    // Get embeddings of viewed blogs from Pinecone or regenerate; for efficiency, assume we fetch from Pinecone
+    const viewedEmbeddings = await Promise.all(viewedBlogIds.map(id => getEmbeddingFromPinecone(id))); // Implement fetch
+    const averageEmbedding = averageVectors(viewedEmbeddings.filter(Boolean) as number[][]);
+    const filter = { status: 'PUBLISHED', $nin: { id: viewedBlogIds } }; // Pinecone filter to exclude viewed
+    const similar = await pineconeService.querySimilarBlogs(averageEmbedding, limit * page, filter);
+    const blogIds = similar.map(s => s.id);
+    const blogs = await prisma.blog.findMany({ where: { id: { in: blogIds } } });
+    const paginated = blogs.slice((page - 1) * limit, page * limit);
+    res.status(200).json({ blogs: paginated });
   } catch (error) {
     next(error);
   }
@@ -117,3 +110,5 @@ export const markRecommendationClicked = async (req: Request, res: Response, nex
     next(error);
   }
 };
+
+

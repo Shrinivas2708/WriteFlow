@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "..";
 import { AppError } from "../utils/AppError";
 import { aiService } from "../services/aiService";
+import { pineconeService } from "../services/pineConeService";
 
 export const generateCoverImage = async (req: Request, res: Response, next: NextFunction) => {
   const { prompt } = req.body;
@@ -39,15 +40,11 @@ export const recommendTags = async (req: Request, res: Response, next: NextFunct
 
 export const aiChat = async (req: Request, res: Response, next: NextFunction) => {
   const { query, blogId } = req.body;
-  if (!query) return next(new AppError(400, "Query required"));
   try {
     let context = "";
-    if (blogId) {
-      const blog = await prisma.blog.findUnique({ where: { id: blogId } });
-      if (!blog) return next(new AppError(404, "Blog not found"));
-      if (blog.status !== "PUBLISHED" && blog.authorId !== req.user?.id) return next(new AppError(403, "Not authorized"));
-      context = blog.content;
-    }
+    let queryEmbedding = await aiService.generateEmbedding(query);
+    const similar = await pineconeService.querySimilarBlogs(queryEmbedding, 5, { status: 'PUBLISHED' });
+    context = similar.map(s => `Blog ID: ${s.id}, Content snippet: ...`).join('\n'); // Fetch actual content from Prisma
     const response = await aiService.chat(query, context);
     res.status(200).json({ response });
   } catch (error) {
